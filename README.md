@@ -65,8 +65,17 @@ generated_recipe = tokenizer_hug.decode(generated_sequence[0]) # Do not skip_spe
 generated_recipe
 ```
 ___
+
+Please download and place the 'fairprice shopping list.csv' in the same folder as the Juypter notebook to calculate the cost as of Nov 2023
+If not please remove the lines of code after `print('-' * 100)`
+```
+fairprice_online = pd.read_csv('fairprice shopping list.csv')
+matching_ingredients = fairprice_online[fairprice_online['Ingredient'].isin(ingredient_list)]
+
+```
 `recipe_sheet(generated_recipe`
 This function styles the produced recipes to a more User friendly format as a Recipe sheet as well as calculate the total cost of ingredients
+
 ```
 def recipe_sheet(generated_recipe):
     user_ingredients = generated_recipe.split("<INPUT_START>")[1].split("<INPUT_END>")[0].replace("<NEXT_INPUT>", ", ").strip()
