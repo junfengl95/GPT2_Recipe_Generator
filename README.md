@@ -11,7 +11,16 @@
 - Generate Recipes: Create recipes based on a list of ingredients or specified 
 
 ## Key Functions
-Assuming the trained model have been loaded,
+
+In order to import the trained model please run the code below
+```
+from transformers import AutoTokenizer, AutoModelForCausalLM
+
+tokenizer_new = AutoTokenizer.from_pretrained("JunF1122/gpt2_finetuned_new_10000recipe_chicken")
+model_new = AutoModelForCausalLM.from_pretrained("JunF1122/gpt2_finetuned_new_10000recipe_chicken")
+```
+___
+
 `prepare_input_text(ingredient_list)` 
 This function prepares the input text for the recipe generation model by formatting the list of ingredients into a structured input string.
 ```
