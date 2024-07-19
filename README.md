@@ -1,4 +1,4 @@
-# IOD_Capstone_Project Recipe Generator
+# GPT2 Recipe Generator
 
 ## Overview
 - The Recipe Generator is an AI-powered tool that creates cooking recipes based on the user preferences and ingredients.
