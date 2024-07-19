@@ -26,15 +26,18 @@ This project is a Recipe Generator App that generates recipes based on user-inpu
     ```
 
 2. **Create and Activate Virtual Environment**:
+
+   If your system does not allow the creation of a virtual environment run the code below in the terminal of the folder before creating the virtual environment
+   ```
+    Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+   ```
+
     ```bash
     python -m venv venv
     source venv/bin/activate  # On Windows use `venv\Scripts\activate`
     ```
 
-    If your system does not allow the creation of a virtual environment run the code below in the terminal of the folder
-   ```
-    Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-   ```
+    
 
 4. **Install Dependencies**:
     ```bash
