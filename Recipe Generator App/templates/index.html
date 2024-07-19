@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Generator</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Recipe Generator Model API</h1>
+        <form id="ingredientForm">
+            <h2>Please select up to 10 Ingredients</h2>
+            <div class="form-group">
+                <label for="selectedIngredients">Selected Ingredients:</label>
+                <textarea id="selectedIngredients" name="ingredients" readonly></textarea>
+                <!-- <input type="text" id="selectedIngredients" name="ingredients" readonly> -->
+            </div>
+            <h3>Select Ingredients:</h3>
+            <div class="ingredient-buttons">
+                <button type="button" class="ingredient-button" data-ingredient="chicken breast">Chicken Breast</button>
+                <button type="button" class="ingredient-button" data-ingredient="salt">Salt</button>
+                <button type="button" class="ingredient-button" data-ingredient="pepper">Pepper</button>
+                <button type="button" class="ingredient-button" data-ingredient="onion">Onion</button>
+                <button type="button" class="ingredient-button" data-ingredient="paprika">Paprika</button>
+                <button type="button" class="ingredient-button" data-ingredient="garlic">Garlic</button>
+                <button type="button" class="ingredient-button" data-ingredient="brocolli">Oil</button>
+                <button type="button" class="ingredient-button" data-ingredient="flour">Flour</button>
+                <button type="button" class="ingredient-button" data-ingredient="celery">Celery</button>
+                <button type="button" class="ingredient-button" data-ingredient="tomatoes">Tomatoes</button>
+                <button type="button" class="ingredient-button" data-ingredient="parsley">Parsley</button>
+                <button type="button" class="ingredient-button" data-ingredient="soy sauce">Soy Sauce</button>
+                <button type="button" class="ingredient-button" data-ingredient="sour cream">Sour Cream</button>
+                <button type="button" class="ingredient-button" data-ingredient="carrot">Carrot</button>
+                <button type="button" class="ingredient-button" data-ingredient="mushroom">Mushroom</button>
+                <button type="button" class="ingredient-button" data-ingredient="mayonnaise">Mayonnaise</button>
+                <button type="button" class="ingredient-button" data-ingredient="rice">Rice</button>
+                <button type="button" class="ingredient-button" data-ingredient="cheese">Cheese</button>
+                <button type="button" class="ingredient-button" data-ingredient="noodles">Noodles</button>
+                <button type="button" class="ingredient-button" data-ingredient="bacon">Bacon</button>
+                <!-- Add more buttons as needed -->
+            </div>
+            <br><br><br>
+            <button type="submit">Generate Recipe</button>
+        </form>
+
+        <div class="loading-spinner" id="loadingSpinner"></div>
+
+        <div class="recipe-output" id="recipe-output" style="display:none;">
+            <h2 id="recipe-title"></h2>
+            <h3>Input Ingredients:</h3>
+            <ul id="user-ingredients" class="ingredient-list"></ul>
+            <h3>Recipe Ingredients:</h3>
+            <ul id="recipe-ingredients" class="ingredient-list"></ul>
+            <h3>Instructions:</h3>
+            <p id="instructions"></p>
+            <h3>Matched Ingredients with Prices:</h3>
+            <ul id="matched-ingredients" class="price-list"></ul>
+            <h3>Total Price:</h3>
+            <p id="total-price"></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ingredientButtons = document.querySelectorAll('.ingredient-button');
+            const selectedIngredientsTextarea = document.getElementById('selectedIngredients');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const recipeOutput = document.getElementById('recipe-output');
+
+            ingredientButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const ingredient = this.dataset.ingredient;
+                    let selectedIngredients = selectedIngredientsTextarea.value ? selectedIngredientsTextarea.value.split(', ') : [];
+
+                    if (selectedIngredients.includes(ingredient)) {
+                        selectedIngredients = selectedIngredients.filter(item => item !== ingredient);
+                    } else {
+                        if (selectedIngredients.length < 10) {
+                            selectedIngredients.push(ingredient);
+                        } else {
+                            alert('You can select up to 10 ingredients.');
+                        }
+                    }
+
+                    selectedIngredientsTextarea.value = selectedIngredients.join(', ');
+                });
+            });
+
+            document.getElementById('ingredientForm').addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent form submission
+
+                const ingredients = selectedIngredientsTextarea.value.split(', ').filter(ingredient => ingredient);
+
+                const inputText = prepareInputText(ingredients);
+                console.log('Formatted Input Text:', inputText);
+
+                // Show the loading spinner
+                loadingSpinner.style.display = 'block';
+                recipeOutput.style.display = 'none';
+
+                fetch('/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ingredients: ingredients })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Recipe:', data);
+                        if (data.error) {
+                            alert(data.error);
+                        } else {
+                            document.getElementById('recipe-title').innerText = data.title;
+                            document.getElementById('user-ingredients').innerHTML = data.user_ingredients.split(',').map(ingredient => `<li>${ingredient}</li>`).join('');
+                            document.getElementById('recipe-ingredients').innerHTML = data.recipe_ingredients.split('\n').map(ingredient => `<li>${ingredient}</li>`).join('');
+                            document.getElementById('instructions').innerText = data.instructions;
+                            document.getElementById('matched-ingredients').innerHTML = data.matched_ingredients.map(item => `<li>${item.Ingredient}: $${item.Price}</li>`).join('');
+                            document.getElementById('total-price').innerText = `$${data.total_price}`;
+                            recipeOutput.style.display = 'block';
+                        }
+                    })
+                    .catch(error => console.error('Error:', error))
+                    .finally(() => {
+                        // Hide the loading spinner
+                        loadingSpinner.style.display = 'none';
+                    });
+            });
+        });
+
+        function prepareInputText(ingredientsList) {
+            if (ingredientsList.length > 10) {
+                ingredientsList = ingredientsList.slice(0, 10);
+            }
+
+            let inputText = "<INPUT_START>";
+            for (let ingredient of ingredientsList) {
+                inputText += ` ${ingredient} <NEXT_INPUT>`;
+            }
+            inputText = inputText.replace(/ <NEXT_INPUT>$/, ""); // Remove the last <NEXT_INPUT>
+            inputText += " <INPUT_END><INGR_START>";
+            return inputText;
+        }
+    </script>
+</body>
+
+</html>

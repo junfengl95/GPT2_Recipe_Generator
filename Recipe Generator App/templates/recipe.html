@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ recipe.title }}</title>
+</head>
+<body>
+    <h1>{{ recipe.title }}</h1>
+    <h2>Input Ingredients</h2>
+    <p>{{ recipe.user_ingredients }}</p>
+
+    <h2>Recipe Ingredients</h2>
+    <p>{{ recipe.recipe_ingredients }}</p>
+
+    <h2>Directions</h2>
+    <p>{{ recipe.instructions }}</p>
+
+    <h2>Matching Ingredients and Prices</h2>
+    <ul>
+        {% for item in recipe.matched_ingredients %}
+            <li>{{ item.Ingredient }}: ${{ item.Price }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Total Price</h2>
+    <p>${{ recipe.total_price }}</p>
+</body>
+</html>
