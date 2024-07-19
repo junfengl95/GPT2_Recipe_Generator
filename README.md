@@ -4,7 +4,8 @@
 - The Recipe Generator is an AI-powered tool that creates cooking recipes based on the user preferences and ingredients.
 - This project leverages on the HuggingFace GPT2LMHeadModel.from_pretrained("gpt2") to train and generate the recipes
 - The model is trained on only 10, 000 chicken recipes due to limited resources
-- The trained model can be accesed from HuggingFace [10,000-chickenRecipes](https://huggingface.co/JunF1122/gpt2_finetuned_new_10000recipe_chicken)
+- The trained model can be accessed from HuggingFace [10,000-chickenRecipes](https://huggingface.co/JunF1122/gpt2_finetuned_new_10000recipe_chicken)
+- To access an example of a local web application using Flask and Python refer to [Recipe Generator App](https://github.com/junfengl95/GPT2_Recipe_Generator/tree/main/Recipe%20Generator%20App)
 
 ## Features
 - Visualization: Visualize ingredient usage and recipe trends with Matplotlib
